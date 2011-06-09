@@ -7,4 +7,5 @@
 # All rights reserved - Do Not Redistribute
 #
 
+default[:dnsmasq][:listen_address] = nil
 default[:dnsmasq][:addresses] = []

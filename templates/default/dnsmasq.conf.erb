@@ -1,3 +1,7 @@
+####################################################################
+##### GENEARTED BY CHEF. LOCAL MODIFICATIONS WILL BE REPLACED. #####
+####################################################################
+
 # Configuration file for dnsmasq.
 #
 # Format is one option per line, legal options are the same
@@ -91,7 +95,9 @@ address=<%= address %>
 #except-interface=
 # Or which to listen on by address (remember to include 127.0.0.1 if
 # you use this.)
-#listen-address=
+<% if node[:dnsmasq][:listen_address] %>
+listen-address=<%= node[:dnsmasq][:listen_address] %>
+<% end %>
 # If you want dnsmasq to provide only DNS service on an interface,
 # configure it as shown above, and then use the following line to
 # disable DHCP on it.
