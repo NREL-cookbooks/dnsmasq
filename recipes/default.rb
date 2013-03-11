@@ -19,8 +19,18 @@ template "/etc/dnsmasq.conf" do
   notifies :restart, "service[dnsmasq]"
 end
 
+if(node[:dnsmasq][:nameservers] && node[:dnsmasq][:nameservers].any?)
+  template "/etc/resolv.dnsmasq" do
+    source "resolv.erb"
+    owner "root"
+    group "root"
+    mode 0644
+    notifies :reload, "service[dnsmasq]"
+  end
+end
+
 service "dnsmasq" do
-  supports :status => true, :restart => true
+  supports :status => true, :restart => true, :reload => true
   action [:enable, :start]
 end
 

@@ -30,7 +30,11 @@
 
 # Change this line if you want dns to get its upstream servers from
 # somewhere other that /etc/resolv.conf
+<% if(node[:dnsmasq][:nameservers] && node[:dnsmasq][:nameservers].any?) %>
+resolv-file=/etc/resolv.dnsmasq
+<% else %>
 #resolv-file=
+<% end %>
 
 # By  default,  dnsmasq  will  send queries to any of the upstream
 # servers it knows about and tries to favour servers to are  known
@@ -439,7 +443,7 @@ listen-address=<%= node[:dnsmasq][:listen_address] %>
 #dhcp-script=/bin/echo
 
 # Set the cachesize here.
-#cache-size=150
+cache-size=<%= node[:dnsmasq][:cache_size] %>
 
 # If you want to disable negative caching, uncomment this.
 #no-negcache

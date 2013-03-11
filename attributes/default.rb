@@ -8,4 +8,6 @@
 #
 
 default[:dnsmasq][:listen_address] = nil
+default[:dnsmasq][:nameservers] = []
 default[:dnsmasq][:addresses] = []
+default[:dnsmasq][:cache_size] = 150
