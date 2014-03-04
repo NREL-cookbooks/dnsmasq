@@ -7,8 +7,6 @@
 # All rights reserved - Do Not Redistribute
 #
 
-# include_recipe "resolver"
-
 package "dnsmasq"
 
 template "/etc/dnsmasq.conf" do
@@ -34,3 +32,20 @@ service "dnsmasq" do
   action [:enable, :start]
 end
 
+replace_or_add "resolv-set-options" do
+  path "/etc/resolv.conf"
+  pattern "options .*"
+  line "options attempts:5 timeout:2"
+end
+
+service "dnsmasq-network" do
+  service_name "network"
+  supports :status => true, :restart => true
+end
+
+replace_or_add "dhclient-prepend-domain-name-servers" do
+  path "/etc/dhcp/dhclient-eth0.conf"
+  pattern "prepend domain-name-servers.*"
+  line "prepend domain-name-servers 127.0.0.1;"
+  notifies :restart, "service[dnsmasq-network]"
+end
