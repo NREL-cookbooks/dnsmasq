@@ -32,20 +32,17 @@ service "dnsmasq" do
   action [:enable, :start]
 end
 
-replace_or_add "resolv-set-options" do
-  path "/etc/resolv.conf"
-  pattern "options .*"
-  line "options attempts:5 timeout:2"
-end
-
 service "dnsmasq-network" do
   service_name "network"
   supports :status => true, :restart => true
+  action :nothing
 end
 
-replace_or_add "dhclient-prepend-domain-name-servers" do
-  path "/etc/dhcp/dhclient-eth0.conf"
-  pattern "prepend domain-name-servers.*"
-  line "prepend domain-name-servers 127.0.0.1;"
-  notifies :restart, "service[dnsmasq-network]"
+ruby_block "dhclient-prepend-domain-name-servers" do
+  block do
+    line = "prepend domain-name-servers 127.0.0.1;"
+    file = Chef::Util::FileEdit.new("/etc/dhcp/dhclient-eth0.conf")
+    file.insert_line_if_no_match(line, line)
+    file.write_file
+  end
 end
