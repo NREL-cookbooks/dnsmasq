@@ -45,9 +45,14 @@ end
 ruby_block "dhclient-prepend-domain-name-servers" do
   block do
     line = "prepend domain-name-servers 127.0.0.1;"
-    file = Chef::Util::FileEdit.new("/etc/dhcp/dhclient-eth0.conf")
-    file.insert_line_if_no_match(line, line)
-    file.write_file
+    file = "/etc/dhcp/dhclient-eth0.conf"
+    if ::File.exists?(file)
+      file = Chef::Util::FileEdit.new(file)
+      file.insert_line_if_no_match(line, line)
+      file.write_file
+    else
+      File.open(file, "w") { |f| f.write(line) }
+    end
   end
 end
 
